@@ -1,0 +1,47 @@
+<html ng-app="demoApp">
+<head>
+
+	<!--
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	-->
+	<link rel="stylesheet" href="../dist/angular-tips.css">
+	
+	<script src="../bower_components/angular/angular.js"></script>
+	<script src="../dist/angular-tips.js"></script>
+	<script src="demo.js"></script>
+
+  
+	<!-- Latest compiled and minified CSS 
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	-->
+
+	<!-- Optional theme 
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+	-->
+	
+	<style>
+		[ng-tips] {
+			display: inline-block;
+			font-size: 16px;
+		}
+	</style>
+</head>
+<body ng-controller="demoCtrl">
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<h1>Angular directive: Angular Tips</h1>
+			<p>Angular directive for a lightweight multi tooltip</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12" style="text-align: center;">
+			<div ng-tips ng-tips-settings="settings" ng-tips-tips="tips">
+				Hover me
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+
+</html>
