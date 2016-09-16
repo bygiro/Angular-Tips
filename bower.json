@@ -25,7 +25,8 @@
     "tests"
   ],
   "dependencies": {
-    "angular": ">=1.2.x"
+    "angular": ">=1.2.x",
+    "angular-tips": "ng-tips#*"
   },
   "devDependencies": {
     "chai": "~1.9.1",
