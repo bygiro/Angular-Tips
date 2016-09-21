@@ -1,6 +1,7 @@
-/*! Angular Tips - v0.0.1
+/*! Angular Tips - v0.0.2
 * Copyright (c) G. Tomaselli <girotomaselli@gmail.com> 2016; Licensed  
 */
+
 angular.module('ng-tips', [])
 .directive('ngTips', ["$timeout", "$compile",  "$parse", "$templateCache", function ($timeout, $compile, $parse, $templateCache) {
 	
@@ -31,7 +32,8 @@ angular.module('ng-tips', [])
 		tipsPending = {},
 		getById = document.getElementById,
 		eleAttrs = ['template','class','on','off','onOff','enable','placement','appendtoBody','tipCloseOn'],
-		tipsToShow = scope.tips;
+		tipsToShow = scope.tips,
+		elementPosition;
 
 		if(typeof tipsToShow == 'undefined') return;
 		
@@ -71,6 +73,26 @@ angular.module('ng-tips', [])
 			setEvent(tipsToShow[i],i);
 		}
 
+		// add a watch to the element position
+		scope.$watch(function(){
+			var el = element[0].getBoundingClientRect();			
+			return el.top +'_'+ el.left +'_'+ el.width +'_'+ el.height;
+		}, function(newVal, oldVal){
+			if(!Object.keys(tipsActive).length) return;
+			
+			if(elementPosition) clearTimeout(elementPosition);
+			elementPosition = setTimeout(function(){
+				for(var t in tipsActive){
+					var tip = tipsActive[t],
+					placement = 'right';
+					if(tip.hasClass('top')) placement = 'top';
+					if(tip.hasClass('left')) placement = 'left';
+					if(tip.hasClass('bottom')) placement = 'bottom';
+					tip.css(scope.getPosition(tip,placement));
+				}				
+			},100);
+		}, true);
+		
 		scope.getPosition = function (htmlCompiled, placement){
 			var tip = htmlCompiled[0].getBoundingClientRect(),
 			tipWidth = tip.width,
@@ -266,19 +288,24 @@ angular.module('ng-tips', [])
 				
 				if(tipSettings.onOff === undefined) continue;
 
-				var tips = {};
-					tips[t] = scope.tips[t];
-
 				scope.$parent.$watch(
 					function(onOff){
 						return function(){return $parse(onOff)(scope.$parent);};
 					}(tipSettings.onOff),
-					function(aTip){
+					function(tipIndex){
 						return function(parseVal){
-							var method = parseVal ? 'on' : 'off';
-							scope['tip'+ method](aTip);
+							var method = parseVal ? 'on' : 'off',
+							tips = {};							
+							tips[tipIndex] = scope.tips[tipIndex];
+							
+							if(method == 'off' && tipsActive[tipIndex]){
+								// remove now tooltip!								
+								tipsActive[tipIndex].removeClass('in').remove();
+							}
+							
+							scope['tip'+ method](tips);
 						};
-					}(tips)
+					}(t)
 				);
 			}		
 		});
