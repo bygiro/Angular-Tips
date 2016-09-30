@@ -19,7 +19,7 @@ angular.module('ng-tips', [])
 			enable: undefined,
 			placement: 'right',
 			tipCloseOn: false, // events on the tip
-			appendToBody: true // Should the tooltip be appended to 'body' instead to be after() the element?
+			appendToBody: false // Should the tooltip be appended to 'body' instead to be after() the element?
 		}, settings = extend({}, defaults, (scope.settings || {})),
 		tipsEvents = {
 			on: {},
@@ -97,11 +97,12 @@ angular.module('ng-tips', [])
 			var tip = htmlCompiled[0].getBoundingClientRect(),
 			tipWidth = tip.width,
 			tipHeight = tip.height,
-			el = element[0].getBoundingClientRect(),
-			elTop = el.top,
-			elLeft = el.left,
-			elWidth = el.width,
-			elHeight = el.height,
+			el = element[0],
+			elBounding = el.getBoundingClientRect(),
+			elTop = el.offsetTop,
+			elLeft = el.offsetLeft,
+			elWidth = elBounding.width,
+			elHeight = elBounding.height,
 			scrollLeft = window.scrollX || document.documentElement.scrollLeft,
 			scrollTop = window.scrollY || document.documentElement.scrollTop,
 			arrow_size = 5,
@@ -197,13 +198,15 @@ angular.module('ng-tips', [])
 							tipsPending[t].remove();
 							delete(tipsPending[t]);
 						}
-													
-						$timeout(function(){
-							htmlCompiled
-								.attr('id',tipSettings.id)
-								.addClass(tipSettings.class +' '+ placement +' in')
-								.css(scope.getPosition(htmlCompiled,placement));
-						});
+
+						$timeout((function(_tipSettings, _placement, _htmlCompiled){
+							return function(){
+								_htmlCompiled
+								.attr('id',_tipSettings.id)
+								.addClass(_tipSettings.class +' '+ _placement +' in')
+								.css(scope.getPosition(_htmlCompiled,_placement));
+							}
+						})(tipSettings, placement, htmlCompiled));
 						
 						if(tipCloseOn){
 							htmlCompiled.on(tipSettings.tipCloseOn, function(){
