@@ -103,8 +103,6 @@ angular.module('ng-tips', [])
 			elLeft = el.offsetLeft,
 			elWidth = elBounding.width,
 			elHeight = elBounding.height,
-			scrollLeft = window.scrollX || document.documentElement.scrollLeft,
-			scrollTop = window.scrollY || document.documentElement.scrollTop,
 			arrow_size = 5,
 			left = false,top,
 			result = {};
@@ -132,8 +130,8 @@ angular.module('ng-tips', [])
 			
 			if(left !== false){
 				result = {
-					left: left + scrollLeft + 'px',
-					top: top + scrollTop + 'px'
+					left: left + 'px',
+					top: top + 'px'
 				};
 			}
 			return result;
